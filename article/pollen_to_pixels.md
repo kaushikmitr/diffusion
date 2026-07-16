@@ -4,7 +4,7 @@
 
 > Every animation referenced below is a numerical integration of the equation next to it, not an artist's impression. Schemes, step sizes, and particle counts are listed on each figure's card.
 
-![The worldline, 1905–2021](assets/worldline.png)
+![The worldline, 1905–2021](../worldline/worldline.png)
 
 **Plate 0.** One century, one worldline: Einstein's Brownian motion, Fokker and Planck's law for the density, Feynman's quantum detour, Kac's rotation back to probability, and image and video generation at the end. The shortest path to a video model ran through quantum mechanics.
 
@@ -22,7 +22,7 @@ Look at what happened there, down to the letters, because they are quietly makin
 
 Don't take my word for it. The animation below is running the actual process: four hundred independent Brownian particles, released from a point, each taking a fresh random Gaussian kick at every tick of the clock. The histogram underneath is measured from those particles, live. The smooth curve on top of it is the analytic solution of the heat equation. Nobody told the particles about the curve.
 
-🎬 `assets/act1_einstein_brownian.mp4`
+🎬 `../animations/act1_einstein_brownian.mp4`
 
 **Plate I.** The falsifiable version of "from randomness emerges predictability." Watch the second pass, which follows one grain, and despair: a single trajectory is genuinely lawless. Return to the crowd and the law is sitting right there: the measured histogram hugs the closed-form PDE solution to within Monte-Carlo noise, $O(1/\sqrt{N})$, exactly as advertised.
 *Card: N = 400 independent particles · D = 1 · update $X \leftarrow X + \sqrt{2D\Delta t}\,\xi$, $\xi \sim N(0,1)$, $\Delta t = 0.02$; for pure Brownian motion this step is the **exact** transition kernel, not an approximation · overlay: analytic heat kernel $p(x,t) = (4\pi Dt)^{-1/2} e^{-x^2/4Dt}$ · right panel: measured $\mathbb{E}[X_t^2]$ vs. the line $2Dt$.*
@@ -49,7 +49,7 @@ $$p_t(x) = \mathcal{N}\!\left(x;\; X_0 + \mu t,\; \sigma^2 t\right),$$
 
 a Gaussian whose center marches at speed $\mu$ while its width spreads as $\sigma\sqrt{t}$, drawn as a deterministic curve. The smooth curve is computed from the equation alone, with no reference to the particles; the bars are the particles alone, with no reference to the equation. They agree at every $t$.
 
-🎬 `assets/act2_feynman_kac_bridge.mp4`
+🎬 `../animations/act2_feynman_kac_bridge.mp4`
 
 **Plate II.** The SDE ↔ PDE dictionary as a laboratory demonstration. The smooth curve is computed from the equation alone, not from the particles. That the bar chart of simulated particles matches it at every instant is the theorem. Note the choice of process is deliberately humble: this is the very SDE displayed above, constants and all. Act III will run this exact process on interesting data and then play it backward. You are looking at the forward half of a diffusion model.
 *Card: Brownian motion with drift $dX = \mu\,dt + \sigma\,dW$, $\mu = 0.8$, $\sigma = 0.55$, $X_0 = -1.5$ · left: position against time, 2,000 paths, stepped by $X \leftarrow X + \mu\Delta t + \sigma\sqrt{\Delta t}\,\xi$, $\Delta t = 0.0125$ (60 drawn); for constant $\mu, \sigma$ this step is again exact · right: analytic density $N(X_0 + \mu t,\; \sigma^2 t)$, plus the live histogram of the simulated paths.*
@@ -94,7 +94,7 @@ Then Song and colleagues asked the dictionary's standing question: this reverse 
 
 $$dX = \Big[ \mu(X,t) - \tfrac{1}{2}\, \sigma^2(t)\, \nabla \log p_t(X) \Big]\,dt$$
 
-![Spot the difference](assets/equations_spot_the_difference.png)
+![Spot the difference](../equations/equations_spot_the_difference.png)
 
 This is the probability-flow ODE. Delete the noise and every particle rides a smooth, fixed current instead of jittering; the current is built so the flowing swarm keeps exactly the same density $p_t$ at every instant as the jittering one did. Same cloud, same shape at every moment, no dice. Play spot-the-difference with Anderson's equation above. The noise term is gone, and the score's coefficient dropped by half: the missing half of the score is doing precisely the work the noise used to do, herding probability mass outward in expectation. Same snapshot $p_t$ at every instant; radically different character. No dice. Given the starting point, the trajectory is fixed, and so is the image at the end of it. And DDIM, published as a clever re-derivation of DDPM's math with the stochasticity dialed to zero, turns out to be a discretization of exactly this ODE. The field's migration from DDPM to DDIM and its descendants is, on our worldline, the walk across Kac's bridge: from Einstein's language to the deterministic one.
 
@@ -102,7 +102,7 @@ Why walk across? Because determinism pays. A smooth trajectory is easy to follow
 
 The animation below shows all of this. Every point starts as noise, a formless scatter drawn from the blurred-out end of the forward process, and the score walks it home. Because the toy data is a mixture of three Gaussians, that score can be written down exactly: no neural network, no pre-rendered frames, nothing up the sleeves. What you are watching is the real mathematics running. And the score is easy to read here: it is three copies of the napkin's leash, one per cluster (each bump of a distribution is called a mode). A point feels all three at once, but the nearest one pulls hardest, so a point deep in one cluster's territory is reeled straight in, while a point caught between two feels a tug-of-war until it commits. Watch the paths start as a single cloud and split into three families as each point's nearest leash wins.
 
-🎬 `assets/act3_ddpm_vs_ddim.mp4`
+🎬 `../animations/act3_ddpm_vs_ddim.mp4`
 
 **Plate III.** DDPM on the left: jittery stochastic paths, every run a fresh Brownian excursion. DDIM on the right: laminar streamlines, the same initial noise landing on the same sample, every time, and both started from the *identical* 220-particle seed. At high step counts both reproduce the cluster weights of the true mixture, which is the whole claim: *the same sequence of snapshots, traveled by entirely different paths.* (Drop DDIM to 8 steps in the interactive version and watch samples cut corners and smear between clusters; few-step sampling is a discretization bargain, not magic.)
 *Card: data = 3-component Gaussian mixture (weights .35/.35/.30) · forward: Plate II's process, $dX = \mu\,dt + \sigma\,dW$ with $\mu = (0.35, 0.2)$, $\sigma = 1.2$, run to $T = 4$; each component stays Gaussian, $N(m_i + \mu t,\, (s_i^2 + \sigma^2 t)\,I)$, so $p_t$ and $\nabla \log p_t$ are exact closed-form expressions · reverse launched from the exact $p_T$, one near-Gaussian blob · DDPM: Euler–Maruyama on the reverse SDE · DDIM: Euler on the probability-flow ODE · 256 steps, $t: 4 \to 0.1$ · in production models the exact score is replaced by a learned network $s_\theta(x,t)$; every other object on screen is unchanged.*

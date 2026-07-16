@@ -17,7 +17,7 @@ The one claim the essay insists on: **every animation is a numerical integration
 | **III** | 2015–2021 | Diffusion models: run the forward process backward — DDPM on the stochastic side, DDIM on the deterministic side. | [`animations/act3_ddpm_vs_ddim.mp4`](animations/act3_ddpm_vs_ddim.mp4) |
 | **Hero** | — | The same reverse process, ~1100 exact Gaussians, drawing a heart. | [`animations/hero_heart.mp4`](animations/hero_heart.mp4) |
 
-Read it as [Markdown](article/pollen_to_pixels.md) or open the self-contained [interactive HTML version](article/pollen_to_pixels.html) in a browser.
+Read it as [Markdown](article/pollen_to_pixels.md) (figures link to the files in [`animations/`](animations/), [`equations/`](equations/), and [`worldline/`](worldline/)) or open the fully self-contained [interactive HTML version](article/pollen_to_pixels.html) in a browser — the HTML renders every visual live in-canvas, no external assets needed.
 
 ---
 
