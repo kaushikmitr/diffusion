@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From Pollen to Pixels: Einstein, Feynman–Kac, and Diffusion Models</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>
+:root{
+  --paper:#FBFAF6; --ink:#1B2437; --ink-soft:#4A5568; --rule:#D8D4C8;
+  --plate:#0B2545; --plate-deep:#081B33; --chalk:#DCE8F5; --chalk-dim:#8FA9C7;
+  --teal:#6FD3B8; --lav:#B7A9F5; --coral:#F0997B; --score:#E8A33D;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'STIX Two Text',Georgia,serif;font-size:19px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px}
+header.hero{padding:84px 0 30px;text-align:left}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(38px,6vw,56px);line-height:1.06;margin:14px 0 18px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--ink-soft);font-style:italic;max-width:640px;margin:0 0 8px}
+.byline{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:22px}
+h2{font-family:'Fraunces',serif;font-weight:600;font-size:31px;line-height:1.15;margin:64px 0 6px}
+.actno{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin:70px 0 -56px;border-top:1px solid var(--rule);padding-top:16px}
+p{margin:0 0 22px}
+em{font-style:italic}
+.marginal{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--rule);padding-left:16px;margin:26px 0}
+.eq{margin:26px 0;overflow-x:auto;overflow-y:hidden;padding:4px 0}
+.eq .katex{font-size:1.06em}
+.score-ink{color:var(--score);font-weight:500}
+.plate{background:var(--plate);border-radius:14px;padding:22px 22px 16px;margin:34px 0 10px;color:var(--chalk)}
+.plate-title{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--chalk-dim);margin:0 0 14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.plate canvas{display:block;width:100%;background:var(--plate-deep);border-radius:8px}
+.ctl{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--chalk-dim)}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:transparent;color:var(--chalk);border:1px solid var(--chalk-dim);border-radius:6px;padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--chalk)}
+.btn.on{background:var(--chalk);color:var(--plate);border-color:var(--chalk)}
+.btn.warm{border-color:var(--score);color:var(--score)}
+.btn.warm.on{background:var(--score);color:var(--plate)}
+.readout{color:var(--chalk);white-space:nowrap}
+input[type=range]{accent-color:var(--chalk);flex:1;min-width:120px}
+select{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--plate-deep);color:var(--chalk);border:1px solid var(--chalk-dim);border-radius:6px;padding:6px 8px}
+.simcard{font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.65;color:var(--chalk-dim);border-top:1px dashed rgba(143,169,199,.45);margin-top:14px;padding-top:10px}
+.caption{font-size:15.5px;color:var(--ink-soft);margin:8px 4px 40px;line-height:1.55}
+.caption b{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+footer{border-top:1px solid var(--rule);margin-top:70px;padding:26px 0 70px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);line-height:1.9}
+.row2{display:flex;gap:12px;flex-wrap:wrap}
+.row2 > div{flex:1;min-width:260px}
+@media (max-width:600px){body{font-size:17.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Physics &rarr; Probability &rarr; Machine learning</div>
+  <h1>From Pollen to Pixels</h1>
+  <p class="dek">Einstein taught us that randomness obeys laws. Feynman and Kac built a bridge between two ways of writing those laws. Diffusion models started on one side of that bridge, and quietly walked across it.</p>
+  <div class="byline">Kaushik &middot; a story in three acts, with live equations &middot; every animation below is a numerical integration of the equation next to it, not an artist's impression</div>
+</header>
+
+<div class="plate" id="plate0">
+  <div class="plate-title"><span>Plate 0 &middot; The worldline, 1905&ndash;2021</span><span><button class="btn" id="wl-play">&#9654; travel the worldline</button></span></div>
+  <svg width="100%" viewBox="0 0 680 400" role="img" aria-label="Historical worldline from Einstein to diffusion models" style="display:block">
+    <defs><marker id="wlarrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#9FB8D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+    <text x="55" y="60" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">CLASSICAL PROBABILITY &mdash; SDEs AND PDEs</text>
+    <text x="55" y="378" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">QUANTUM MECHANICS</text>
+    <line x1="50" y1="235" x2="640" y2="235" stroke="#8FA9C7" stroke-width="0.6" stroke-dasharray="4 5" opacity="0.7"/>
+    <path id="wl-path" d="M 80 150 C 170 140 230 160 275 260 C 295 305 330 330 360 300 C 395 265 395 200 440 165 C 480 138 560 135 602 121" fill="none" stroke="#9FB8D8" stroke-width="1.6" marker-end="url(#wlarrow)"/>
+    <circle cx="80" cy="150" r="6" fill="#6FD3B8"/>
+    <text x="80" y="112" fill="#DCE8F5" font-size="14" font-weight="500" font-family="IBM Plex Mono,monospace">1905 &middot; Einstein</text>
+    <text x="80" y="130" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">Brownian motion &rarr; heat equation</text>
+    <circle cx="173" cy="151" r="4" fill="#6FD3B8"/>
+    <text x="140" y="185" text-anchor="middle" fill="#DCE8F5" font-size="12.5" font-weight="500" font-family="IBM Plex Mono,monospace">1914&ndash;17 &middot; Fokker &amp; Planck</text>
+    <text x="140" y="202" text-anchor="middle" fill="#8FA9C7" font-size="11.5" font-family="IBM Plex Mono,monospace">the density gets its equation</text>
+    <circle cx="320" cy="318" r="6" fill="#B7A9F5"/>
+    <text x="300" y="349" text-anchor="middle" fill="#DCE8F5" font-size="14" font-weight="500" font-family="IBM Plex Mono,monospace">1942&ndash;48 &middot; Feynman</text>
+    <text x="300" y="366" text-anchor="middle" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">path integrals: sum over paths</text>
+    <circle cx="400" cy="235" r="5" fill="none" stroke="#B7A9F5" stroke-width="1.6"/>
+    <g id="rot-glyph" transform="translate(400,235)"><path d="M 14 0 A 14 14 0 0 0 0 -14" fill="none" stroke="#B7A9F5" stroke-width="1.2" marker-end="url(#wlarrow)" opacity="0.9"/></g>
+    <text x="418" y="258" fill="#DCE8F5" font-size="14" font-weight="500" font-family="IBM Plex Mono,monospace">1947 &middot; Kac rotates time</text>
+    <text x="418" y="275" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">t &rarr; &minus;i&tau;, back to probability</text>
+    <circle cx="540" cy="136" r="4" fill="#6FD3B8"/>
+    <text x="540" y="172" text-anchor="middle" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">1982 &middot; Anderson</text>
+    <text x="540" y="188" text-anchor="middle" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">reverse-time SDE</text>
+    <circle cx="612" cy="119" r="6" fill="#F0997B"/>
+    <text x="630" y="80" text-anchor="end" fill="#DCE8F5" font-size="14" font-weight="500" font-family="IBM Plex Mono,monospace">2015&ndash;21 &middot; image &amp; video generation</text>
+    <text x="630" y="97" text-anchor="end" fill="#8FA9C7" font-size="12" font-family="IBM Plex Mono,monospace">diffusion models: DDPM (SDE) &middot; DDIM (ODE)</text>
+    <circle id="wl-dot" cx="80" cy="150" r="5" fill="#DCE8F5" opacity="0"/>
+  </svg>
+</div>
+<p class="caption"><b>Plate 0.</b> One century, one worldline: Einstein's Brownian motion, Fokker and Planck's law for the density, Feynman's quantum detour, Kac's rotation back to probability, and image and video generation at the end. The shortest path to a video model ran through quantum mechanics.</p>
+<div class="actno">Act I &middot; 1905</div>
+<h2>Einstein: from randomness, law</h2>
+
+<p>In 1827 the botanist Robert Brown pointed a microscope at pollen grains suspended in water and watched them jitter for no reason anyone could name. Suspecting he was watching something alive, he swapped the sample: grains of dead pollen jittered too, and so did specks of powdered glass. Whatever drove the motion, it wasn't biology.</p>
+
+<p>It took seventy-eight years and a patent clerk to explain it. Einstein's 1905 argument (published between the paper that won him the Nobel Prize and the one that introduced relativity, which tells you what kind of year he was having) is that each grain is being shoved by an unthinkably large number of water molecules. You cannot track the shoves. You will never predict where <em>one</em> grain goes. And then the twist: you don't have to. Ask a different question, "how does the <em>cloud</em> of grains evolve?" instead of "where is this grain?", and chaos snaps into clockwork. The mean-squared displacement of a grain grows linearly in time, and the density of grains obeys the heat equation:</p>
+
+<div class="eq">\[ \langle X_t^2 \rangle = 2Dt, \qquad\qquad \frac{\partial p}{\partial t} = D\,\frac{\partial^2 p}{\partial x^2} \]</div>
+
+<p>Look at what happened there, down to the letters, because they are quietly making the point. On the left, \(X_t\) is the position of one pollen grain at time \(t\): a random variable, different every time you release a grain and let it wander, and the brackets average over that randomness. On the right, \(x\) is not random at all: it is simply a location on the microscope slide, and \(p(x,t)\) is the density of grains you would count there at time \(t\). One equation per world. The left is a statement about random walkers; the right is a deterministic partial differential equation, the same one that governs how heat spreads through a metal bar, no randomness anywhere in sight. Einstein's discovery is that the two equations describe the same physical situation. Randomness at the level of the individual; complete predictability at the level of the distribution.</p>
+
+<p>Don't take my word for it. The plate below is running the actual process: four hundred independent Brownian particles, released from a point, each taking a fresh random Gaussian kick at every tick of the clock. The histogram underneath is measured from those particles, live. The smooth curve on top of it is the analytic solution of the heat equation. Nobody told the particles about the curve.</p>
+
+<div class="plate" id="plate1">
+  <div class="plate-title"><span>Plate I &middot; Einstein's ensemble</span><span id="p1-time" class="readout"></span></div>
+  <div class="row2">
+    <div style="flex:1.5;min-width:300px">
+      <canvas id="p1-cloud" height="10"></canvas>
+      <canvas id="p1-hist" height="10" style="margin-top:10px"></canvas>
+    </div>
+    <div>
+      <canvas id="p1-msd" height="10"></canvas>
+    </div>
+  </div>
+  <div class="ctl">
+    <button class="btn on" id="p1-play">&#10074;&#10074; pause</button>
+    <button class="btn" id="p1-reset">reset</button>
+    <button class="btn" id="p1-follow">follow one grain</button>
+    <button class="btn warm" id="p1-verify">verify</button>
+    <span class="readout" id="p1-resid"></span>
+  </div>
+  <div class="simcard">N = 400 independent particles &middot; D = 1 &middot; update X &larr; X + &radic;(2D&Delta;t)&middot;&xi;, &xi; ~ N(0,1), &Delta;t = 0.02; for pure Brownian motion this step is the <em>exact</em> transition kernel, not an approximation &middot; histogram: empirical density of grain positions x &middot; overlay: analytic heat kernel p(x,t) = (4&pi;Dt)<sup>&minus;&frac12;</sup> e<sup>&minus;x&sup2;/4Dt</sup> &middot; right: measured &lang;X<sub>t</sub>&sup2;&rang; vs. the line 2Dt &middot; loops at t = 6</div>
+</div>
+<p class="caption"><b>Plate I.</b> The falsifiable version of "from randomness emerges predictability." Toggle <em>follow one grain</em> and despair: a single trajectory is genuinely lawless. Toggle back to the crowd and the law is sitting right there. <em>Verify</em> shows the L&sup1; distance between the measured histogram and the closed-form PDE solution; it hovers at the Monte-Carlo noise floor, O(1/&radic;N), exactly as advertised.</p>
+
+<p>This paper did more than explain pollen. Molecules were still controversial in 1905; respectable physicists considered atoms a bookkeeping fiction. Einstein's formula tied the jitter you can see to the size of molecules you can't, and when Jean Perrin measured it and extracted Avogadro's number, the atomic debate ended and Perrin collected a Nobel Prize. The irony deserves a moment, because the rest of this essay lives inside it. <em>We proved matter has structure by watching structure dissolve into noise.</em> A century later, the same mathematics would run the dissolution in reverse.</p>
+
+<div class="actno">Act II &middot; 1947</div>
+<h2>Feynman&ndash;Kac: the bridge gets a name</h2>
+
+<p>First, let's give Einstein's two viewpoints modern clothes. The particle view becomes a <em>stochastic differential equation</em>. Note the grammar: no derivatives anywhere, only differentials, small changes responding to small changes. That is forced, not stylistic. Brownian paths are so jagged they have no derivative to write down, so the honest statement is a recipe for increments: a small deliberate step, plus a Gaussian kick, at every instant:</p>
+
+<div class="eq">\[ dX = \mu(X, t)\,dt \;+\; \sigma(t)\,dW \]</div>
+
+<p>Read it term by term. \(dX\) is the small change in the particle's position over the next instant \(dt\). The drift \(\mu(X, t)\) is the deliberate part: the push the particle feels, which may depend on where it is and when. \(dW\) is an increment of Brownian motion, the infinitesimal version of Act I's molecular kicks: a fresh Gaussian nudge at every instant, with a typical size that scales as \(\sqrt{dt}\), the square-root law from Act I written for a single step. Its coefficient \(\sigma(t)\) sets how hard those nudges land. Set \(\mu = 0\) and \(\sigma = \sqrt{2D}\) and you recover Einstein's pollen exactly. Drift plus diffusion; intention plus jitter. And the distribution view becomes the Fokker&ndash;Planck equation, derived by Adriaan Fokker and Max Planck (yes, that Planck) around 1914&ndash;1917, the heat equation's grown-up sibling:</p>
+
+<div class="eq">\[ \frac{\partial p}{\partial t} = -\,\mu\,\frac{\partial p}{\partial x} + \frac{1}{2}\,\sigma^2\,\frac{\partial^2 p}{\partial x^2}, \qquad p(x,0) = \delta(x - X_0) \]</div>
+
+<p>No randomness anywhere: this is a deterministic machine that evolves the density \(p_t(x)\) of a swarm of such particles, one term carrying it along the drift, one term spreading it out; set \(\mu = 0\), \(\sigma = \sqrt{2D}\) and it collapses back to Einstein's heat equation. Every SDE has a twin PDE. Two languages, one reality: you can follow the particles, or you can evolve the density, and you must get the same answer.</p>
+
+<p>Plate II checks the dictionary on the humblest possible case: Brownian motion with a constant drift. This is the SDE from the top of this act, \(dX = \mu\,dt + \sigma\,dW\), with \(\mu\) and \(\sigma\) held to constants. Left panel, the particle language: an ensemble of simulated paths, drift step plus Gaussian kick, pure gambling. Right panel, the density language: the analytic density, the exact solution of this SDE's Fokker&ndash;Planck equation,</p>
+
+<div class="eq">\[ p_t(x) = \mathcal{N}\!\left(x;\; X_0 + \mu t,\; \sigma^2 t\right) \]</div>
+
+<p>a Gaussian whose center marches at speed \(\mu\) while its width spreads as \(\sigma\sqrt{t}\), drawn as a deterministic curve. The smooth curve is computed from the equation alone, with no reference to the particles; the bars are the particles alone, with no reference to the equation. Drag the scrubber; they agree at every t.</p>
+
+<div class="plate" id="plate2">
+  <div class="plate-title"><span>Plate II &middot; One process, two languages</span><span id="p2-time" class="readout"></span></div>
+  <div class="row2">
+    <div style="flex:1.7;min-width:300px"><canvas id="p2-paths" height="10"></canvas></div>
+    <div><canvas id="p2-dens" height="10"></canvas></div>
+  </div>
+  <div class="ctl">
+    <button class="btn on" id="p2-play">&#10074;&#10074; pause</button>
+    <input type="range" id="p2-scrub" min="0" max="240" value="0" step="1" aria-label="time scrubber">
+    <button class="btn warm" id="p2-verify">verify</button>
+    <span class="readout" id="p2-resid"></span>
+  </div>
+  <div class="simcard">Brownian motion with drift: dX = &mu;&thinsp;dt + &sigma;&thinsp;dW, &mu; = 0.8, &sigma; = 0.55, X&#8320; = &minus;1.5 &middot; LEFT: 2,000 paths, stepped by X &larr; X + &mu;&Delta;t + &sigma;&radic;&Delta;t&middot;&xi;, &Delta;t = 0.0125 (60 drawn); for constant &mu;, &sigma; this step is again exact &middot; RIGHT: analytic density N( X&#8320; + &mu;t, &sigma;&sup2;t ), plus the live histogram of the 2,000 simulated paths at time t &middot; curve from the equation, bars from the particles, nothing else shared</div>
+</div>
+<p class="caption"><b>Plate II.</b> The SDE&nbsp;&harr;&nbsp;PDE dictionary as a laboratory demonstration. The smooth curve is computed from the equation alone, not from the particles. That the bar chart of simulated particles matches it at every instant is the theorem. Note the choice of process is deliberately humble: this is the very SDE displayed above, constants and all. Act III will run this exact process on interesting data and then play it backward. You are looking at the forward half of a diffusion model.</p>
+
+<p>That "must" deserves to be a theorem, and the theorem arrived from the strangest possible direction. In the 1940s at Cornell, Richard Feynman was giving seminars on his path-integral formulation of quantum mechanics: to get the amplitude for a particle going from point A to point B, sum a phase over <em>every possible path</em>, including the ridiculous ones (a detour to Mars and back counts). In the audience sat the probabilist Mark Kac. Two decades earlier, Norbert Wiener had made Brownian motion rigorous by assigning probabilities to entire wiggly paths, so that a quantity could be averaged over all Brownian paths at once; the technique is called Wiener integration, and it was Kac's home turf. Kac later wrote that he understood one thing immediately: Feynman's sum over paths, with time \(t\) rotated to the imaginary axis \(t \to -i\tau\), stopped being quantum mechanics and became exactly such an average over Brownian paths. Feynman had reinvented Wiener integration with an \(i\) in it. Kac took the \(i\) back out and got a theorem of classical probability. Here is its cleanest version, and it starts from an equation we have already seen. Take the Fokker&ndash;Planck equation from a moment ago, keep its operator exactly, but change the question. Instead of releasing a spike at the start and asking where the density flows, pin a chosen function at the <em>end</em> and ask what must have led to it:
+
+</p>
+
+<div class="eq">\[ \frac{\partial u}{\partial t} = -\,\mu\,\frac{\partial u}{\partial x} - \frac{1}{2}\,\sigma^2\,\frac{\partial^2 u}{\partial x^2}, \qquad u(x,T) = f(x) \]</div>
+
+<p>
+
+Same operator as Fokker&ndash;Planck, opposite sign on the diffusion term, and a condition at the end rather than the start. That flipped sign is the whole difference between running time forward and backward. And the object it solves for is no longer a density but an expectation: \(u\) is not how much stuff sits at \(x\), but the average of a future measurement. This is a perfectly deterministic problem. The unknown \(u\) is pinned at the final time: at \(t = T\) it must equal a chosen function, \(u(x,T) = f(x)\). The equation then asks what \(u\) must have been at earlier times, and there is not a random symbol in sight. The Feynman&ndash;Kac recipe for solving it: to find \(u\) at position \(x\) and time \(t\), release a wanderer there, let the SDE carry it to time \(T\), record \(f\) wherever it lands, and average over all Brownian paths:
+
+</p>
+
+<div class="eq">\[ u(x,t) = \mathbb{E}\big[\, f(X_T) \mid X_t = x \,\big] \]</div>
+
+<p>
+
+The conditioning bar is the launch: position \(x\), time \(t\). And \(f(X_T)\) is the measurement collected where the path ends; pick \(f(y) = 1\) inside some target region and \(0\) outside, and \(u(x,t)\) is the probability that the wanderer finishes in the target. The randomness averages out, leaving an ordinary, non-random function of the launch point, and the theorem is that this function solves the equation above exactly. A deterministic PDE, solved by gambling.</p>
+
+<p>Careful with these two functions, because they are easy to conflate: \(u\) is not a density. Put the two displayed PDEs side by side. The density \(p_t(x)\) is pinned at the start, a spike at the release point, and Fokker&ndash;Planck pushes it forward: released back then, how much of the swarm sits here now? The expectation \(u(x,t)\) is pinned at the end, \(u(x,T) = f(x)\), and its equation pulls it backward: standing here now, what will the measurement average out to at time \(T\)? One function carries the past forward; the other carries the future backward. Forward and reverse gears of the same dictionary.</p>
+
+<p>Read the formula right to left and it says <em>simulate particles, average, and you have solved a PDE</em>. Read it left to right and it says <em>any average over random paths can be computed without simulating a single path: solve the PDE instead</em>. It is the SDE&nbsp;&harr;&nbsp;PDE dictionary, certified. (Kac's full theorem carries one more passenger: a potential \(V(x)\) charged as a toll along the path, entering the average as \(e^{-\int V}\), the imaginary-time shadow of Feynman's quantum phase. Same idea, more luggage.) One loose end, acknowledged and set down: the same rotation \(t \to -i\tau\) also connects quantum mechanics to thermodynamics, with imaginary time playing the role of inverse temperature. That connection is deep, it deserves its own essay, and nothing in this one depends on it. (Schr&ouml;dinger, incidentally, had poked at this correspondence from the other side back in 1931; his "bridge" problem is now a diffusion-model subfield of its own, but that's another essay.)</p>
+
+
+<div class="actno">Act III &middot; 2015&ndash;2021</div>
+<h2>Diffusion models: crossing the bridge in reverse</h2>
+
+<p>Here is the entire scheme of a diffusion model, in Einstein's vocabulary. Take your data (images, molecules, audio) and treat every sample as a pollen grain. Let it undergo Plate II's process, verbatim: Brownian motion with a constant drift, until, after enough time, every trace of the original structure has dissolved and the swarm is, to a very good approximation, a single featureless Gaussian blob. (Production models bend the drift into a restoring pull toward the origin, which makes the endpoint exactly \(N(0, I)\) whatever the data. Nothing else in the story changes; we keep the humble version.) That's the forward process, and it is 1905 physics, verbatim. The heresy is the next question: <em>can you run it backwards?</em> Can you start from noise and un-dissolve?</p>
+
+<p>Remarkably, yes, and you do not need the general theory to taste it. Take the process you can already watch, Plate II's drifted Brownian motion, and ask what law the movie obeys when played in reverse. The answer fits on a napkin:
+
+</p>
+
+<div class="eq">\[dX = \Big[ -\mu \;-\; \frac{X - X_0 - \mu t}{t} \Big]\, d\tau \;+\; \sigma\, d\bar{W}_\tau\]</div>
+
+<p>
+
+with \(\tau\) running backward, from \(T\) toward \(0\). Two terms, two jobs. The first, \(-\mu\), undoes the march. The second is a leash pulling each particle back toward the release point, with a stiffness that grows like \(1/t\): gentle far from the start, ferocious near it, herding every reverse path onto exactly \(X_0\) at exactly \(t = 0\) and un-spreading everything diffusion spread. Reversing the drift undoes the march; the leash undoes the entropy. (Set \(\mu = 0\) and this is the textbook Brownian bridge.) And the leash is not an ad hoc invention. Take Plate II's density, \(p_t = N(X_0 + \mu t,\, \sigma^2 t)\), and compute the gradient of its logarithm: you get exactly the leash, divided by \(\sigma^2\). The reversal knew about the density.</p>
+
+<p>This is not special to Gaussians. In 1982 Brian Anderson proved that reversing <em>any</em> diffusion gives another diffusion, with an explicit formula. One note on notation: the literature writes the sample as a lowercase \(x\) and the coefficients as \(f\) and \(g\). We keep our own letters instead: capital \(X\) for the random wanderer, lowercase \(x\) reserved for map coordinates, as Act I taught, and Act II's \(\mu\) and \(\sigma\), with the one restriction the theorem wants, that \(\sigma\) may vary with time but not with position:
+
+</p>
+
+<div class="eq">\[ dX \;=\; \Big[ \mu(X,t) \;-\; \sigma^2(t)\, \textcolor{#C77F1A}{\nabla \log p_t(X)} \Big]\,dt \;+\; \sigma(t)\, d\bar{W}_t \]</div>
+
+<p>
+
+This is the reverse-time SDE, and everything in it is known from the forward process you chose, except the term in the middle. That term is a field: a quantity defined at every point of space, like wind on a weather map, which the equation reads off wherever the wanderer currently stands. The field is \(\nabla_x \log p_t(x)\), the <em>score</em>: the uphill direction on the log of \(p_t\). And \(p_t\) is an old friend, not a new character: Act II's forward density, the snapshot of the dissolving swarm at time \(t\). There is one such field per moment of the dissolution, and each is the general form of the napkin's leash: it points from wherever you are toward wherever the data is.</p>
+
+<p>If you had the score, you could reverse entropy on demand. You don't: for real data \(p_t\) is unknowable. This is the single point in the whole story where deep learning enters: train a neural network \(s_\theta(x,t) \approx \nabla_x \log p_t(x)\). One learned function. Everything else, the forward SDE, the reversal formula, the sampling procedure, is Einstein and Anderson.</p>
+
+<p>DDPM, the 2020 model that ignited the field, lives entirely on the particle side of the SDE&nbsp;&harr;&nbsp;PDE dictionary. Sampling is a stochastic simulation: a thousand small steps, each one drift-plus-fresh-noise, a genuine Brownian path wandering home to the data distribution. Run it twice from the same starting noise and you get two different images. Beautiful; also slow, and about as reproducible as an actual pollen grain.</p>
+
+<p>Then Song and colleagues asked the dictionary's standing question: this reverse SDE describes a swarm of particles; what does the <em>density</em> say? Writing down the Fokker&ndash;Planck equation of the reverse process and factoring it, they found something lovely: there is a completely deterministic ODE whose flow pushes the density through <em>exactly the same sequence of distributions</em>:</p>
+
+<div class="eq">\[ dX \;=\; \Big[ \mu(X,t) \;-\; \tfrac{1}{2}\, \sigma^2(t)\, \textcolor{#C77F1A}{\nabla \log p_t(X)} \Big]\,dt \]</div>
+
+<p>This is the probability-flow ODE, and the name is literal: it is the deterministic flow that carries probability. Play spot-the-difference with Anderson's equation above. The noise term is gone, and the score's coefficient dropped by half: the missing half of the score is doing precisely the work the noise used to do, herding probability mass outward in expectation. Same snapshot \(p_t\) at every instant; radically different character. No dice. Given the starting point, the trajectory is fixed, and so is the image at the end of it. And DDIM, published as a clever re-derivation of DDPM's math with the stochasticity dialed to zero, turns out to be a discretization of exactly this ODE. The field's migration from DDPM to DDIM and its descendants is, on our worldline, the walk across Kac's bridge: from Einstein's language to the deterministic one.</p>
+
+<p>Why walk across? Because determinism pays. A smooth trajectory is easy to follow in big steps, so 20 to 50 steps replace DDPM's thousand. Because nothing is random, the same starting noise always gives the same image. And the route can be driven in both directions: push a real image forward into its noise, nudge that noise, and come back, which is where a whole genre of image editing lives. The deterministic view is also the doorway to flow matching and consistency models, which is where the field went next.</p>
+
+<p>The animation below shows all of this. Because the toy data is a mixture of three Gaussians, the score can be written down exactly: no neural network, no pre-rendered frames, nothing up the sleeves. What you are watching is the real mathematics running. And for this mixture the exact score is easy to read: three copies of the napkin's leash, one per cluster (each bump of a distribution is called a mode), blended by how plausibly each cluster explains where you currently stand. Watch the deterministic streamlines split into three families as that vote sharpens.</p>
+
+<div class="plate" id="plate3">
+  <div class="plate-title"><span>Plate III &middot; DDPM vs. DDIM, same bridge, two crossings</span><span id="p3-status" class="readout"></span></div>
+  <canvas id="p3-canvas" height="10"></canvas>
+  <div class="ctl">
+    <button class="btn on" id="p3-sde">DDPM &middot; reverse SDE</button>
+    <button class="btn" id="p3-ode">DDIM &middot; probability-flow ODE</button>
+    <select id="p3-steps" aria-label="number of steps"><option>8</option><option>16</option><option selected>32</option><option>64</option><option>128</option><option>256</option></select>
+    <span>steps</span>
+    <button class="btn warm" id="p3-run">&#9654; resample &amp; run</button>
+    <span class="readout" id="p3-occ"></span>
+  </div>
+  <div class="simcard">Data: 3-component Gaussian mixture (weights .35/.35/.30) &middot; forward: Plate II's process, dX = &mu;&thinsp;dt + &sigma;&thinsp;dW with &mu; = (0.35, 0.2), &sigma; = 1.2, run to T = 4; each component stays Gaussian, N( m&#7522; + &mu;t, (s&#7522;&sup2; + &sigma;&sup2;t)&thinsp;I ), so p&#8348; and its score &nabla;log&thinsp;p&#8348; are exact closed-form expressions, evaluated live &middot; reverse launched from the exact final-time mixture, one near-Gaussian blob &middot; DDPM: Euler&ndash;Maruyama on the reverse SDE (fresh Wiener increment every step) &middot; DDIM: Euler on the probability-flow ODE (no randomness after the initial draw) &middot; 220 particles, integrated t = 4 &rarr; 0.1 &middot; dashed rings: 1&sigma; and 2&sigma; contours of the true data distribution &middot; readout: fraction of samples landing at each cluster vs. the true weights &middot; in production models the exact score is replaced by a learned network s&#7461;(x,t); every other object on screen is unchanged</div>
+</div>
+<p class="caption"><b>Plate III.</b> Run DDPM twice: the paths are jittery cousins and the endpoints reshuffle: every run is a fresh Brownian excursion. Switch to DDIM: laminar streamlines, and the same initial noise lands on the same sample, every time. Now do the honest experiment the papers describe: drop DDIM to 8 steps and watch samples cut corners and smear between clusters; few-step sampling is a discretization bargain, not magic. Both samplers at high step counts reproduce the cluster weights of the true mixture, which is the whole claim: <em>the same sequence of snapshots, traveled by entirely different paths.</em></p>
+
+<h2 style="margin-top:70px">Epilogue: how much of this was actually new?</h2>
+
+<p>Strip the story to one sentence per act. Einstein discovered that randomness, viewed at the level of distributions, is deterministic, and handed us the forward process. Feynman and Kac (with an accidental detour through quantum mechanics) certified the dictionary between the path view and the density view. Diffusion models learned the one function nature wouldn't give us, the score, and then used the dictionary in both directions: DDPM samples on Einstein's side of the bridge, DDIM on the deterministic side, and the snapshots can't tell the difference.</p>
+
+<p>I find the accounting here genuinely humbling. Of everything running inside a modern image or video generator's sampler, the neural network occupies one term of one equation: the amber term. The rest is a 1905 argument about pollen, a 1947 theorem born when a probabilist recognized his own subject inside a quantum lecture, and a 1982 reversal formula that waited forty years for its moment. We didn't invent a new mathematics of generation. We learned to estimate a single gradient, and a century of physics did the generating.</p>
+
+<p class="marginal">The next time a diffusion model draws you a picture, remember what the machinery is: pollen grains, running backwards, across a bridge built by a physicist who was trying to do something else entirely.</p>
+
+<footer>
+  <div>Plates 0&ndash;III are live numerical integrations of the stated equations (schemes and step sizes on each plate's card). Source is this page; view-source to audit.</div>
+  <div style="margin-top:8px">Further reading: Einstein (1905), &Uuml;ber die von der molekularkinetischen Theorie&hellip; &middot; Kac (1949), On distributions of certain Wiener functionals &middot; Anderson (1982), Reverse-time diffusion equation models &middot; Ho et al. (2020), DDPM &middot; Song et al. (2021), Score-based generative modeling through SDEs &middot; Song et al. (2021), DDIM.</div>
+</footer>
+</div>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],trust:true});"></script>
+<script>
+'use strict';
+// ---------- shared helpers ----------
+function gauss(){ let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+function fitCanvas(cv, cssH){ const dpr=Math.min(2,window.devicePixelRatio||1);
+  const w=cv.parentElement.clientWidth || cv.clientWidth || 300;
+  cv.style.height=cssH+'px'; cv.width=Math.round(w*dpr); cv.height=Math.round(cssH*dpr);
+  const g=cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); return [g,w,cssH]; }
+const CHALK='#DCE8F5', DIM='#8FA9C7', TEAL='#6FD3B8', CORAL='#F0997B', AMBER='#E8A33D', LAV='#B7A9F5';
+function axisText(g,txt,x,y,align){ g.fillStyle=DIM; g.font='11px "IBM Plex Mono",monospace'; g.textAlign=align||'left'; g.fillText(txt,x,y); }
+
+// ---------- Plate 0: worldline dot ----------
+(function(){
+  const path=document.getElementById('wl-path'), dot=document.getElementById('wl-dot'),
+        btn=document.getElementById('wl-play'), L=path.getTotalLength();
+  let anim=null;
+  btn.addEventListener('click',()=>{ if(anim)cancelAnimationFrame(anim);
+    dot.setAttribute('opacity','1'); const t0=performance.now(), dur=6000;
+    (function step(now){ const u=Math.min(1,(now-t0)/dur);
+      const e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2; const pt=path.getPointAtLength(e*L);
+      dot.setAttribute('cx',pt.x); dot.setAttribute('cy',pt.y);
+      if(u<1)anim=requestAnimationFrame(step); else setTimeout(()=>dot.setAttribute('opacity','0'),1200); })(t0); });
+})();
+
+// ---------- Plate I: Brownian ensemble ----------
+(function(){
+  const N=400, D=1, DT=0.02, TMAX=6, L=8, BINS=61;
+  let xs=new Float64Array(N), ys=new Float64Array(N), t=0, playing=true, follow=false, verify=false;
+  let trail=[];
+  const msdT=[], msdV=[];
+  const [gc,wc]=fitCanvas(document.getElementById('p1-cloud'),300);
+  const [gh,wh]=fitCanvas(document.getElementById('p1-hist'),140);
+  const [gm,wm]=fitCanvas(document.getElementById('p1-msd'),300+140+10);
+  const cloudH=300, histH=140, msdH=450;
+  function reset(){ xs.fill(0); ys.fill(0); t=0; trail=[]; msdT.length=0; msdV.length=0; }
+  document.getElementById('p1-reset').onclick=reset;
+  const playBtn=document.getElementById('p1-play');
+  playBtn.onclick=()=>{ playing=!playing; playBtn.classList.toggle('on',playing);
+    playBtn.innerHTML=playing?'&#10074;&#10074; pause':'&#9654; play'; };
+  const fBtn=document.getElementById('p1-follow');
+  fBtn.onclick=()=>{ follow=!follow; fBtn.classList.toggle('on',follow); };
+  const vBtn=document.getElementById('p1-verify');
+  vBtn.onclick=()=>{ verify=!verify; vBtn.classList.toggle('on',verify);
+    document.getElementById('p1-resid').textContent=''; };
+  function stepSim(){ const s=Math.sqrt(2*D*DT);
+    for(let i=0;i<N;i++){ xs[i]+=s*gauss(); ys[i]+=s*gauss(); }
+    t+=DT; trail.push([xs[0],ys[0]]); if(trail.length>400)trail.shift();
+    let m=0; for(let i=0;i<N;i++)m+=xs[i]*xs[i]; msdT.push(t); msdV.push(m/N);
+    if(t>=TMAX)reset(); }
+  function px(x){ return (x+L)/(2*L)*wc; } function py(y){ return (y+L)/(2*L)*cloudH; }
+  function draw(){
+    gc.clearRect(0,0,wc,cloudH);
+    gc.strokeStyle='rgba(143,169,199,0.25)'; gc.lineWidth=0.5;
+    gc.beginPath(); gc.moveTo(px(0),0); gc.lineTo(px(0),cloudH); gc.moveTo(0,py(0)); gc.lineTo(wc,py(0)); gc.stroke();
+    gc.fillStyle=follow?'rgba(220,232,245,0.28)':'rgba(220,232,245,0.85)';
+    for(let i=follow?1:0;i<N;i++){ gc.fillRect(px(xs[i])-1.2,py(ys[i])-1.2,2.4,2.4); }
+    if(follow&&trail.length>1){ gc.strokeStyle=CORAL; gc.lineWidth=1.1; gc.beginPath();
+      gc.moveTo(px(trail[0][0]),py(trail[0][1]));
+      for(const p of trail)gc.lineTo(px(p[0]),py(p[1])); gc.stroke();
+      gc.fillStyle=CORAL; gc.beginPath(); gc.arc(px(xs[0]),py(ys[0]),3.4,0,7); gc.fill(); }
+    axisText(gc,'one grain: lawless',10,18);
+    // histogram
+    gh.clearRect(0,0,wh,histH);
+    const counts=new Float64Array(BINS), bw=2*L/BINS;
+    for(let i=0;i<N;i++){ const b=Math.floor((xs[i]+L)/bw); if(b>=0&&b<BINS)counts[b]++; }
+    let resid=0; const tt=Math.max(t,1e-6); let pk=1/Math.sqrt(4*Math.PI*D*Math.max(tt,0.05));
+    for(let b=0;b<BINS;b++){ const dens=counts[b]/(N*bw);
+      const xc=-L+(b+0.5)*bw; const anl=Math.exp(-xc*xc/(4*D*tt))/Math.sqrt(4*Math.PI*D*tt);
+      resid+=Math.abs(dens-anl)*bw;
+      const h=Math.min(1,dens/pk)*(histH-26);
+      gh.fillStyle='rgba(111,211,184,0.55)';
+      gh.fillRect(b/BINS*wh, histH-8-h, wh/BINS-1, h); }
+    gh.strokeStyle=CHALK; gh.lineWidth=1.4; gh.beginPath();
+    for(let i=0;i<=200;i++){ const x=-L+i/200*2*L;
+      const anl=Math.exp(-x*x/(4*D*tt))/Math.sqrt(4*Math.PI*D*tt);
+      const Y=histH-8-Math.min(1,anl/pk)*(histH-26), X=i/200*wh;
+      i?gh.lineTo(X,Y):gh.moveTo(X,Y); } gh.stroke();
+    axisText(gh,'measured histogram of x  vs  analytic heat kernel (white line)',10,14);
+    if(verify)document.getElementById('p1-resid').textContent='L\u00B9 residual = '+resid.toFixed(3);
+    // MSD
+    gm.clearRect(0,0,wm,msdH); const pad=34;
+    gm.strokeStyle='rgba(143,169,199,0.4)'; gm.lineWidth=0.7;
+    gm.beginPath(); gm.moveTo(pad,10); gm.lineTo(pad,msdH-pad); gm.lineTo(wm-8,msdH-pad); gm.stroke();
+    const ymax=2*D*TMAX*1.15;
+    const X=v=>pad+v/TMAX*(wm-pad-12), Y=v=>msdH-pad-v/ymax*(msdH-pad-16);
+    gm.strokeStyle=DIM; gm.setLineDash([4,4]); gm.beginPath();
+    gm.moveTo(X(0),Y(0)); gm.lineTo(X(TMAX),Y(2*D*TMAX)); gm.stroke(); gm.setLineDash([]);
+    gm.strokeStyle=TEAL; gm.lineWidth=1.6; gm.beginPath();
+    for(let i=0;i<msdT.length;i++){ i?gm.lineTo(X(msdT[i]),Y(msdV[i])):gm.moveTo(X(msdT[i]),Y(msdV[i])); }
+    gm.stroke();
+    axisText(gm,'\u27E8X_t\u00B2\u27E9 measured (teal) vs 2Dt (dashed)',pad+4,16);
+    axisText(gm,'t',wm-14,msdH-pad+14); axisText(gm,'0',pad-4,msdH-pad+14,'right');
+    document.getElementById('p1-time').textContent='t = '+t.toFixed(2)+' / '+TMAX;
+  }
+  (function loop(){ if(playing)stepSim(); draw(); requestAnimationFrame(loop); })();
+})();
+
+// ---------- Plate II: drifted Brownian paths vs analytic density ----------
+(function(){
+  const MU=0.8, SIG=0.55, X0=-1.5, T=3.0, NP=2000, STEPS=240, DT=T/STEPS, NDRAW=60, BINS=51, XR=4.0;
+  const drawn=[], hists=[];
+  (function precompute(){ const x=new Float64Array(NP).fill(X0);
+    for(let k=0;k<NDRAW;k++)drawn.push([X0]);
+    hists.push(snap(x));
+    const sq=Math.sqrt(DT);
+    for(let s=1;s<=STEPS;s++){ for(let i=0;i<NP;i++)x[i]+=MU*DT+SIG*sq*gauss();
+      for(let k=0;k<NDRAW;k++)drawn[k].push(x[k]);
+      hists.push(snap(x)); }
+    function snap(x){ const c=new Float64Array(BINS), bw=2*XR/BINS;
+      for(let i=0;i<NP;i++){ const b=Math.floor((x[i]+XR)/bw); if(b>=0&&b<BINS)c[b]++; } return c; } })();
+  const [gp,wp]=fitCanvas(document.getElementById('p2-paths'),320);
+  const [gd,wd]=fitCanvas(document.getElementById('p2-dens'),320);
+  const H=320; let idx=0, playing=true, verify=false;
+  const scrub=document.getElementById('p2-scrub');
+  const playBtn=document.getElementById('p2-play');
+  playBtn.onclick=()=>{ playing=!playing; playBtn.classList.toggle('on',playing);
+    playBtn.innerHTML=playing?'&#10074;&#10074; pause':'&#9654; play'; };
+  scrub.addEventListener('input',()=>{ idx=+scrub.value; playing=false;
+    playBtn.classList.remove('on'); playBtn.innerHTML='&#9654; play'; });
+  const vBtn=document.getElementById('p2-verify');
+  vBtn.onclick=()=>{ verify=!verify; vBtn.classList.toggle('on',verify);
+    document.getElementById('p2-resid').textContent=''; };
+  function mean(t){ return X0+MU*t; }
+  function vart(t){ return Math.max(SIG*SIG*t,1e-4); }
+  const Yx=v=>H/2-(v/XR)*(H/2-14);
+  function draw(){
+    const t=idx*DT;
+    gp.clearRect(0,0,wp,H);
+    gp.strokeStyle='rgba(143,169,199,0.3)'; gp.lineWidth=0.5;
+    gp.beginPath(); gp.moveTo(0,Yx(0)); gp.lineTo(wp,Yx(0)); gp.stroke();
+    for(let k=0;k<NDRAW;k++){ gp.strokeStyle='rgba(220,232,245,'+(k?0.16:0.9)+')';
+      gp.lineWidth=k?0.7:1.4; gp.beginPath();
+      for(let s=0;s<=idx;s++){ const X=s/STEPS*wp, Y=Yx(drawn[k][s]); s?gp.lineTo(X,Y):gp.moveTo(X,Y); }
+      gp.stroke(); }
+    gp.strokeStyle=DIM; gp.setLineDash([3,4]); gp.beginPath();
+    const tx=idx/STEPS*wp; gp.moveTo(tx,0); gp.lineTo(tx,H); gp.stroke(); gp.setLineDash([]);
+    axisText(gp,'SDE side: paths (Euler\u2013Maruyama)',10,16);
+    // density panel
+    gd.clearRect(0,0,wd,H);
+    const m=mean(t), v=Math.max(vart(t),1e-4), bw=2*XR/BINS, c=hists[idx];
+    const pk=1/Math.sqrt(2*Math.PI*vart(T)*0.9)*1.15;
+    gd.fillStyle='rgba(111,211,184,0.5)';
+    let resid=0;
+    for(let b=0;b<BINS;b++){ const xc=-XR+(b+0.5)*bw, dens=c[b]/(NP*bw);
+      const anl=Math.exp(-(xc-m)*(xc-m)/(2*v))/Math.sqrt(2*Math.PI*v);
+      resid+=Math.abs(dens-anl)*bw;
+      const wbar=Math.min(1,dens/pk)*(wd-20);
+      gd.fillRect(0,Yx(xc)-((H-28)/BINS)/2, wbar, (H-28)/BINS-1); }
+    gd.strokeStyle=CHALK; gd.lineWidth=1.5; gd.beginPath();
+    for(let i=0;i<=200;i++){ const x=-XR+i/200*2*XR;
+      const anl=Math.exp(-(x-m)*(x-m)/(2*v))/Math.sqrt(2*Math.PI*v);
+      const X=Math.min(1,anl/pk)*(wd-20), Y=Yx(x);
+      i?gd.lineTo(X,Y):gd.moveTo(X,Y); } gd.stroke();
+    axisText(gd,'PDE side: analytic p(x,t)',10,16);
+    if(verify)document.getElementById('p2-resid').textContent='L\u00B9 residual = '+resid.toFixed(3);
+    document.getElementById('p2-time').textContent='t = '+t.toFixed(2)+' / '+T;
+  }
+  (function loop(){ if(playing){ idx=(idx+1)%(STEPS+1); scrub.value=idx; } draw(); requestAnimationFrame(loop); })();
+})();
+
+// ---------- Plate III: DDPM vs DDIM, drift-BM forward, exact GMM score ----------
+(function(){
+  const MEANS=[[-2.2,-1.4],[2.4,-1.0],[0.2,2.2]], STD=[0.55,0.5,0.6], W=[0.35,0.35,0.30];
+  const MUX=0.35, MUY=0.2, SIG=1.2, TF=4.0, NPART=220, TEND=0.1, XR=8.0;
+  function score(x,y,t){ const r=[0,0,0]; let Z=0;
+    const sx=[0,0]; for(let i=0;i<3;i++){ const s2=STD[i]*STD[i]+SIG*SIG*t;
+      const dx=x-(MEANS[i][0]+MUX*t), dy=y-(MEANS[i][1]+MUY*t);
+      r[i]=W[i]/s2*Math.exp(-(dx*dx+dy*dy)/(2*s2)); Z+=r[i]; }
+    for(let i=0;i<3;i++){ const s2=STD[i]*STD[i]+SIG*SIG*t, g=r[i]/Z;
+      sx[0]+=g*((MEANS[i][0]+MUX*t)-x)/s2; sx[1]+=g*((MEANS[i][1]+MUY*t)-y)/s2; } return sx; }
+  const [g,w]=fitCanvas(document.getElementById('p3-canvas'),480); const H=480;
+  const PX=v=>(v+XR)/(2*XR)*w, PY=v=>(v+XR)/(2*XR)*H;
+  let mode='sde', running=false, traj=[], finals=null;
+  const sdeBtn=document.getElementById('p3-sde'), odeBtn=document.getElementById('p3-ode');
+  function setMode(m){ mode=m; sdeBtn.classList.toggle('on',m==='sde'); odeBtn.classList.toggle('on',m==='ode'); }
+  sdeBtn.onclick=()=>setMode('sde'); odeBtn.onclick=()=>setMode('ode');
+  let seed=null;
+  document.getElementById('p3-run').onclick=()=>{ start(true); };
+  odeBtn.addEventListener('click',()=>{ if(seed)start(false); });
+  sdeBtn.addEventListener('click',()=>{ if(seed)start(false); });
+  function start(fresh){
+    const NS=+document.getElementById('p3-steps').value;
+    if(fresh||!seed){ seed=new Float64Array(NPART*2);
+      for(let i=0;i<NPART;i++){ const u=Math.random(); const c=u<W[0]?0:(u<W[0]+W[1]?1:2);
+        const sd=Math.sqrt(STD[c]*STD[c]+SIG*SIG*TF);
+        seed[2*i]=MEANS[c][0]+MUX*TF+sd*gauss(); seed[2*i+1]=MEANS[c][1]+MUY*TF+sd*gauss(); } }
+    const x=Float64Array.from(seed);
+    traj=[snapshot(x)]; finals=null;
+    const dt=(TF-TEND)/NS; let step=0; running=true;
+    document.getElementById('p3-occ').textContent='';
+    const perFrame=Math.max(1,Math.round(NS/80));
+    (function frame(){
+      for(let k=0;k<perFrame&&step<NS;k++,step++){ const t=TF-step*dt, s2=SIG*SIG, sq=SIG*Math.sqrt(dt);
+        for(let i=0;i<NPART;i++){ const xi=x[2*i], yi=x[2*i+1], s=score(xi,yi,t);
+          if(mode==='sde'){ x[2*i]+=(-MUX+s2*s[0])*dt+sq*gauss();
+                            x[2*i+1]+=(-MUY+s2*s[1])*dt+sq*gauss(); }
+          else{ x[2*i]+=(-MUX+0.5*s2*s[0])*dt; x[2*i+1]+=(-MUY+0.5*s2*s[1])*dt; } }
+        traj.push(snapshot(x)); }
+      document.getElementById('p3-status').textContent=(mode==='sde'?'DDPM':'DDIM')+' \u00B7 step '+step+'/'+NS;
+      draw();
+      if(step<NS)requestAnimationFrame(frame);
+      else{ running=false; finals=snapshot(x); occupancy(x); draw(); } })();
+  }
+  function snapshot(x){ return Float64Array.from(x); }
+  function occupancy(x){ const c=[0,0,0];
+    for(let i=0;i<NPART;i++){ let bi=0,bd=1e9; for(let m=0;m<3;m++){ const dx=x[2*i]-MEANS[m][0],dy=x[2*i+1]-MEANS[m][1];
+      const d=dx*dx+dy*dy; if(d<bd){bd=d;bi=m;} } c[bi]++; }
+    document.getElementById('p3-occ').textContent='modes: '+c.map(v=>Math.round(100*v/NPART)+'%').join(' / ')+'  (true 35/35/30)'; }
+  function draw(){
+    g.clearRect(0,0,w,H);
+    g.setLineDash([4,5]); g.lineWidth=0.8;
+    for(let i=0;i<3;i++){ g.strokeStyle='rgba(143,169,199,0.55)';
+      for(const k of [1,2]){ g.beginPath();
+        g.ellipse(PX(MEANS[i][0]),PY(MEANS[i][1]),k*STD[i]/(2*XR)*w,k*STD[i]/(2*XR)*H,0,0,7); g.stroke(); } }
+    g.setLineDash([]);
+    const col=mode==='sde'?'rgba(240,153,123,':'rgba(111,211,184,';
+    if(traj.length>1){ g.lineWidth=0.8;
+      for(let i=0;i<NPART;i+=2){ g.strokeStyle=col+'0.22)'; g.beginPath();
+        for(let s=0;s<traj.length;s++){ const X=PX(traj[s][2*i]),Y=PY(traj[s][2*i+1]);
+          s?g.lineTo(X,Y):g.moveTo(X,Y); } g.stroke(); } }
+    const last=traj.length?traj[traj.length-1]:null;
+    if(last){ g.fillStyle=col+'0.95)';
+      for(let i=0;i<NPART;i++){ g.beginPath(); g.arc(PX(last[2*i]),PY(last[2*i+1]),2.2,0,7); g.fill(); } }
+    axisText(g,'dashed rings: true data distribution \u00B7 '+(mode==='sde'?'coral: stochastic reverse-SDE paths':'teal: deterministic probability-flow streamlines'),10,16);
+  }
+  setMode('sde'); draw();
+  document.getElementById('p3-status').textContent='press resample & run';
+})();
+</script>
+</body>
+</html>
