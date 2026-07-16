@@ -1,8 +1,10 @@
 import numpy as np, matplotlib.pyplot as plt
 from matplotlib.animation import FFMpegWriter
 from style_ck import *
+import os
 
-OUT = "/home/claude/assets"
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "animations")
+os.makedirs(OUT, exist_ok=True)
 rng = np.random.default_rng(7)
 N, D, DT, TMAX, L, BINS = 400, 1.0, 0.02, 6.0, 8.0, 61
 STEPS = int(TMAX/DT)  # 300

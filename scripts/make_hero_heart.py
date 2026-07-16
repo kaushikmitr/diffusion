@@ -1,9 +1,14 @@
 import numpy as np, matplotlib.pyplot as plt
 from matplotlib.animation import FFMpegWriter
 from style_ck import strip
+import os
 
-OUT = "/home/claude/assets"
-M = np.load('/tmp/heart_means.npy'); K = len(M)
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "animations")
+os.makedirs(OUT, exist_ok=True)
+# Precomputed Gaussian means sampled over the heart silhouette (required input).
+# Override with the HEART_MEANS env var; defaults to heart_means.npy next to this script.
+HEART_MEANS = os.environ.get("HEART_MEANS", os.path.join(os.path.dirname(os.path.abspath(__file__)), "heart_means.npy"))
+M = np.load(HEART_MEANS); K = len(M)
 S0, MU, SIG, TF = 0.075, np.array([0.,0.]), 1.35, 4.0
 NP, NS, XR = 3000, 200, 4.2          # 1500 -> 3000 points (doubled)
 

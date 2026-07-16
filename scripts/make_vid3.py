@@ -2,8 +2,10 @@ import numpy as np, matplotlib.pyplot as plt
 from matplotlib.animation import FFMpegWriter
 from matplotlib.patches import Circle
 from style_ck import *
+import os
 
-OUT = "/home/claude/assets"
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "animations")
+os.makedirs(OUT, exist_ok=True)
 rng = np.random.default_rng(21)
 MEANS = np.array([[-2.2, -1.4], [2.4, -1.0], [0.2, 2.2]])
 STD = np.array([0.55, 0.5, 0.6]); W = np.array([0.35, 0.35, 0.30])

@@ -4,7 +4,7 @@ import matplotlib.transforms as mt
 from style_ck import *
 import os
 
-OUT = "/home/claude/assets"; os.makedirs(OUT, exist_ok=True)
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "equations"); os.makedirs(OUT, exist_ok=True)
 INK, EDGE, AMBER_DARK = "#1B2437", "#0B2545", "#B8770A"
 
 

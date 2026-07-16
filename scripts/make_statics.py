@@ -3,8 +3,11 @@ from matplotlib.path import Path
 from matplotlib.patches import PathPatch, FancyArrowPatch
 from style_ck import *
 
-OUT = "/home/claude/assets"
-import os; os.makedirs(OUT, exist_ok=True)
+import os
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# This script writes to two different asset folders.
+WORLDLINE_OUT = os.path.join(REPO, "worldline"); os.makedirs(WORLDLINE_OUT, exist_ok=True)
+EQUATIONS_OUT = os.path.join(REPO, "equations"); os.makedirs(EQUATIONS_OUT, exist_ok=True)
 
 # ---------------- worldline.png (white, straight line + detour, labels only) ----------------
 BG, INK, SUB, RULE, CURV = "#FFFFFF", "#1B2437", "#5B6B82", "#B9C6D6", "#6E86A6"
@@ -55,7 +58,7 @@ ax.text(xF, F(yBot)-42, "Feynman",       fontsize=18, color=T_LAV, ha="center", 
 ax.text(xF, F(yBot)-70, "path integrals", fontsize=14.5, color=SUB,  ha="center", va="top")
 ax.text(325, 145, "quantum detour", fontsize=12, color=T_LAV, ha="center", va="center", style="italic", alpha=0.9)
 
-fig.savefig(f"{OUT}/worldline.png", facecolor=BG); plt.close(fig)
+fig.savefig(f"{WORLDLINE_OUT}/worldline.png", facecolor=BG); plt.close(fig)
 
 # ---------------- equations.png ----------------
 fig = plt.figure(figsize=(16, 9), dpi=100)
@@ -93,5 +96,5 @@ fig.text(0.5, 0.19, "same snapshot p_t at every instant; identical destination, 
 fig.text(0.5, 0.115, "the missing half of the score does the work the noise used to do;\n"
          "the amber term is the only thing a neural network learns",
          ha="center", fontsize=12.5, color=DIM)
-fig.savefig(f"{OUT}/equations_spot_the_difference.png"); plt.close(fig)
+fig.savefig(f"{EQUATIONS_OUT}/equations_spot_the_difference.png"); plt.close(fig)
 print("statics done")

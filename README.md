@@ -65,16 +65,19 @@ python -m pip install numpy matplotlib torch
 
 **Render**
 
-The scripts were authored to write to a fixed `OUT` directory (e.g. `/home/claude/assets`) and, for the hero animation, to read heart means from `/tmp/heart_means.npy`. Adjust the `OUT` path (and any `/tmp` inputs) near the top of a script to match your machine, then run it:
+Each script locates the repo relative to itself and writes into the correct folder automatically — no path editing needed. Run from anywhere:
 
 ```bash
-cd scripts
-python make_vid1.py      # Act I
-python make_vid2.py      # Act II
-python make_vid3.py      # Act III
+python scripts/make_vid1.py         # Act I    -> animations/
+python scripts/make_vid2.py         # Act II   -> animations/
+python scripts/make_vid3.py         # Act III  -> animations/
+python scripts/make_equations.py    # equation cards -> equations/
+python scripts/make_statics.py      # worldline -> worldline/, spot-the-difference -> equations/
 ```
 
 Each run performs the actual numerical integration described on that figure's card (scheme, step size, and particle count are all printed in the article), so results are deterministic up to the seeded RNG.
+
+The hero animation ([`make_hero_heart.py`](scripts/make_hero_heart.py)) needs one extra input: a precomputed `heart_means.npy` array of Gaussian centers sampled over the heart silhouette. Point the script at it with `HEART_MEANS=/path/to/heart_means.npy python scripts/make_hero_heart.py` (it defaults to `scripts/heart_means.npy`). That array is not checked into the repo.
 
 ---
 
